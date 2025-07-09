@@ -43,7 +43,7 @@ A simple, lightweight Laravel package for creating value objects, including an A
   * **Generic Eloquent Casting**: Easily converts model attributes into instances of your custom value objects and vice versa.
   * **Artisan command**: Quickly generates value object skeletons.
   * **Built-in validation**: Add your validation logic directly into the constructor of your value objects.
-  * **Extensive compatibility**: Supports Laravel 9, 10, 11, 12 and PHP 8.1, 8.2, 8.3, 8.4.
+  * **Extensive compatibility**: Supports Laravel 10, 11, 12 and PHP 8.2, 8.3, 8.4.
 
 ## 🚀 Installation
 
