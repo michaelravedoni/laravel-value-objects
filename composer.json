@@ -19,12 +19,12 @@
   ],
   "require": {
     "php": "^8.2",
-    "illuminate/contracts": "^9.0 || ^10.0 || ^11.0",
     "illuminate/support": "^9.0 || ^10.0 || ^11.0 || ^12.0",
     "illuminate/database": "^9.0 || ^10.0 || ^11.0 || ^12.0",
     "illuminate/console": "^9.0 || ^10.0 || ^11.0 || ^12.0"
   },
   "require-dev": {
+    "illuminate/contracts": "^9.0 || ^10.0 || ^11.0",
     "laravel/pint": "^1.23",
     "orchestra/testbench": "^9.0 || ^10.0 || ^11.0",
     "pestphp/pest": "^3.0",
