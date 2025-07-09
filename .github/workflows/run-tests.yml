@@ -8,48 +8,52 @@ on:
 
 jobs:
   test:
-    runs-on: ubuntu-latest
+    runs-on: ${{ matrix.os }}
 
     strategy:
+      fail-fast: true
       matrix:
-        php: [8.2, 8.3, 8.4]
-        laravel: [9, 10]
+        os: [ubuntu-latest]
+        php: [8.3, 8.2, 8.1]
+        laravel: ['9.*', '10.*', '11.*', '12.*']
+        dependency-version: [prefer-lowest, prefer-stable]
         include:
-          - php: 8.3
-            laravel: 11
-          - php: 8.4
-            laravel: 11
+          - laravel: 11.*
+            testbench: 9.*
+          - laravel: 10.*
+            testbench: 8.*
+          - laravel: 9.*
+            testbench: 7.*
+          - laravel: 12.*
+            testbench: 10.*
         exclude:
-          - php: 8.2
-            laravel: 11
-          - laravel: 12
+          - laravel: 11.*
+            php: 8.1
+          - laravel: 12.*
+            php: 8.1
 
-    name: P${{ matrix.php }} - L${{ matrix.laravel }}
+    name: P${{ matrix.php }} - L${{ matrix.laravel }} - ${{ matrix.dependency-version }} - ${{ matrix.os }}
 
     steps:
-      - uses: actions/checkout@v4
-      - uses: shivammathur/setup-php@v2
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Setup PHP
+        uses: shivammathur/setup-php@v2
         with:
           php-version: ${{ matrix.php }}
-          extensions: dom, curl, libxml, mbstring, zip, pcntl, pdo, sqlite, pdo_sqlite, bcmath, soap, intl, gd, exif, iconv
-          coverage: none # xdebug or pcov
+          extensions: dom, curl, libxml, mbstring, zip, pcntl, pdo, sqlite, pdo_sqlite, bcmath, soap, intl, gd, exif, iconv, imagick
+          coverage: none
+
+      - name: Setup problem matchers
+        run: |
+          echo "::add-matcher::${{ runner.tool_cache }}/php.json"
+          echo "::add-matcher::${{ runner.tool_cache }}/phpunit.json"
 
       - name: Install dependencies
-        run: composer update --prefer-dist --no-interaction --no-progress --no-suggest
-
-      - name: Run Composer update for Laravel version
         run: |
-          if [ "${{ matrix.laravel }}" -eq "9" ]; then
-            composer require "orchestra/testbench:^9.0" --no-update --dev --with-all-dependencies --prefer-stable
-          elif [ "${{ matrix.laravel }}" -eq "10" ]; then
-            composer require "orchestra/testbench:^10.0" --no-update --dev --with-all-dependencies --prefer-stable
-          elif [ "${{ matrix.laravel }}" -eq "11" ]; then
-            # Pour Laravel 11, on peut avoir besoin de la branche dev de testbench
-            # Le "dev-master" pointe vers la branche la plus récente qui supporte L11
-            composer require "orchestra/testbench:^11.0" --no-update --dev --with-all-dependencies --prefer-lowest
-            # Le --prefer-lowest est CRUCIAL ici pour éviter les versions de testbench qui pointent vers Laravel 13
-          fi
-          composer update --prefer-dist --no-interaction --no-progress --no-suggest
-          
-      - name: Run tests
-        run: vendor/bin/pest
+          composer require "laravel/framework:${{ matrix.laravel }}" "orchestra/testbench:${{ matrix.testbench }}" --no-interaction --no-update
+          composer update --${{ matrix.dependency-version }} --prefer-dist --no-interaction
+
+      - name: Execute tests
+        run: vendor/bin/phpunit
