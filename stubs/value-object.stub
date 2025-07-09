@@ -1,0 +1,47 @@
+<?php
+
+namespace {{ namespace }};
+
+use MichaelRavedoni\LaravelValueObjects\ValueObjects\BaseValueObject;
+use InvalidArgumentException;
+
+class {{ class }} extends BaseValueObject
+{
+    /**
+     * The raw value of the value object.
+     *
+     * @var mixed
+     */
+    protected mixed $value;
+
+    /**
+     * Create a new {{ class }} instance.
+     *
+     * @param mixed $value The raw value.
+     */
+    public function __construct(mixed $value)
+    {
+        // Add your validation and logic here
+        // For example:
+        // if (!is_string($value) || empty($value)) {
+        //     throw new InvalidArgumentException('Value cannot be empty.');
+        // }
+        $this->value = $value;
+    }
+
+    /**
+     * Get the raw value of the value object.
+     *
+     * @return mixed
+     */
+    public function value(): mixed
+    {
+        return $this->value;
+    }
+
+    // Add your custom methods here, e.g.:
+    // public function getFormattedValue(): string
+    // {
+    //     return strtoupper($this->value);
+    // }
+}
