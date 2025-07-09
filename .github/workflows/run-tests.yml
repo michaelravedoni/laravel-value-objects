@@ -13,7 +13,14 @@ jobs:
     strategy:
       matrix:
         php: [8.2, 8.3, 8.4]
-        laravel: [9, 10, 11, 12]
+        laravel: [9, 10, 11]
+        include:
+          - php: 8.3
+            laravel: 11
+          - php: 8.4
+            laravel: 11
+          - php: 8.4
+            laravel: 12
 
     name: P${{ matrix.php }} - L${{ matrix.laravel }}
 
